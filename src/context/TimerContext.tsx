@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 import { toast } from '@/components/ui/use-toast';
@@ -27,9 +26,10 @@ export interface TimerSettings {
   longBreakInterval: number;
   autoStartBreaks: boolean;
   autoStartPomodoros: boolean;
-  adaptiveTimers: boolean; // New setting for AI adaptation
-  soundEnabled: boolean; // New setting for background sounds
-  distractionAlerts: boolean; // New setting for distraction alerts
+  adaptiveTimers: boolean; 
+  soundEnabled: boolean;
+  distractionAlerts: boolean;
+  voiceControlEnabled: boolean; // New setting for voice control
 }
 
 // Break suggestion type
@@ -86,6 +86,7 @@ const defaultSettings: TimerSettings = {
   adaptiveTimers: true, // Enable by default
   soundEnabled: false,
   distractionAlerts: true,
+  voiceControlEnabled: false, // Disabled by default
 };
 
 // Break suggestions

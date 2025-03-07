@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useTimer } from '@/context/TimerContext';
 import { useTasks } from '@/context/TaskContext';
@@ -14,6 +13,7 @@ import {
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/components/ui/use-toast';
+import VoiceControl from '../Voice/VoiceControl';
 
 const TimerControls: React.FC = () => {
   const { 
@@ -35,18 +35,15 @@ const TimerControls: React.FC = () => {
 
   const { tasks, incrementTaskPomodoro } = useTasks();
   
-  // Only show non-completed tasks
   const availableTasks = tasks.filter(task => !task.completed);
 
   const handleStartTimer = () => {
     startTimer();
-    // Increment pomodoro count when starting a focus session with a task selected
     if (mode === 'focus' && currentTaskId) {
       incrementTaskPomodoro(currentTaskId);
     }
   };
   
-  // Toggle adaptive timer setting
   const toggleAdaptiveTimer = () => {
     updateSettings({ adaptiveTimers: !settings.adaptiveTimers });
     toast({
@@ -57,7 +54,6 @@ const TimerControls: React.FC = () => {
     });
   };
   
-  // Toggle sound setting
   const toggleSound = () => {
     updateSettings({ soundEnabled: !settings.soundEnabled });
     toast({
@@ -75,7 +71,6 @@ const TimerControls: React.FC = () => {
   
   return (
     <div className="flex flex-col gap-6 w-full max-w-md mx-auto">
-      {/* Mode selector */}
       <div className="flex justify-center gap-2">
         <Button
           variant={mode === 'focus' ? 'default' : 'outline'}
@@ -112,7 +107,6 @@ const TimerControls: React.FC = () => {
         </Button>
       </div>
       
-      {/* Break suggestion (only show on breaks) */}
       {(mode === 'shortBreak' || mode === 'longBreak') && breakSuggestion && (
         <div className="w-full px-4 py-3 bg-blue-50 rounded-lg border border-blue-200 text-center">
           <h4 className="font-medium text-blue-700">{breakSuggestion.title}</h4>
@@ -120,7 +114,6 @@ const TimerControls: React.FC = () => {
         </div>
       )}
       
-      {/* Task selector (only show for focus mode) */}
       {mode === 'focus' && (
         <div className="w-full">
           <Select
@@ -143,7 +136,6 @@ const TimerControls: React.FC = () => {
         </div>
       )}
       
-      {/* Session stats (only during focus) */}
       {mode === 'focus' && (isRunning || isPaused) && (
         <div className="flex justify-between px-1">
           <Badge variant="outline" className={cn(
@@ -164,7 +156,6 @@ const TimerControls: React.FC = () => {
         </div>
       )}
       
-      {/* Timer controls */}
       <div className="flex justify-center items-center gap-4">
         {isRunning ? (
           <Button
@@ -212,8 +203,7 @@ const TimerControls: React.FC = () => {
         </Button>
       </div>
       
-      {/* AI and Sound controls */}
-      <div className="flex justify-center gap-4">
+      <div className="flex justify-center gap-2 flex-wrap">
         <Button
           variant="outline"
           size="sm"
@@ -253,6 +243,8 @@ const TimerControls: React.FC = () => {
             </>
           )}
         </Button>
+        
+        <VoiceControl />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTimer, TimerMode } from '@/context/TimerContext';
 import { cn } from '@/lib/utils';
-import { BrainCircuit, LineChart } from 'lucide-react';
+import { BrainCircuit, LineChart, Mic } from 'lucide-react';
 
 const TimerDisplay: React.FC = () => {
   const { 
@@ -89,13 +89,24 @@ const TimerDisplay: React.FC = () => {
         </div>
       </div>
       
-      {/* AI Indicator for adaptive timers */}
-      {settings.adaptiveTimers && (
-        <div className="flex items-center gap-1 mb-2 text-purple-500 bg-purple-50 px-2 py-1 rounded-full text-xs">
-          <BrainCircuit className="h-3 w-3" />
-          <span>AI Adaptation Active</span>
-        </div>
-      )}
+      {/* Feature indicators */}
+      <div className="flex items-center gap-2 mb-2">
+        {/* AI Indicator for adaptive timers */}
+        {settings.adaptiveTimers && (
+          <div className="flex items-center gap-1 text-purple-500 bg-purple-50 px-2 py-1 rounded-full text-xs">
+            <BrainCircuit className="h-3 w-3" />
+            <span>AI Active</span>
+          </div>
+        )}
+        
+        {/* Voice Control Indicator */}
+        {settings.voiceControlEnabled && (
+          <div className="flex items-center gap-1 text-red-500 bg-red-50 px-2 py-1 rounded-full text-xs">
+            <Mic className="h-3 w-3" />
+            <span>Voice Ready</span>
+          </div>
+        )}
+      </div>
       
       <div className="relative my-4">
         <svg 

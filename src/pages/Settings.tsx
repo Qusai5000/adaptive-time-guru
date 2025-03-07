@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '@/components/Layout/Layout';
 import { useTimer, TimerSettings } from '@/context/TimerContext';
@@ -15,7 +14,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
-import { BrainCircuit, Volume2, Bell } from 'lucide-react';
+import { BrainCircuit, Volume2, Bell, Mic } from 'lucide-react';
 
 const Settings = () => {
   const { settings, updateSettings } = useTimer();
@@ -30,6 +29,7 @@ const Settings = () => {
   const [adaptiveTimers, setAdaptiveTimers] = React.useState(settings.adaptiveTimers);
   const [soundEnabled, setSoundEnabled] = React.useState(settings.soundEnabled);
   const [distractionAlerts, setDistractionAlerts] = React.useState(settings.distractionAlerts);
+  const [voiceControlEnabled, setVoiceControlEnabled] = React.useState(settings.voiceControlEnabled);
   
   // Handle save
   const handleSave = () => {
@@ -43,6 +43,7 @@ const Settings = () => {
       adaptiveTimers,
       soundEnabled,
       distractionAlerts,
+      voiceControlEnabled,
     };
     
     updateSettings(newSettings);
@@ -64,6 +65,7 @@ const Settings = () => {
     setAdaptiveTimers(true);
     setSoundEnabled(false);
     setDistractionAlerts(true);
+    setVoiceControlEnabled(false);
     
     updateSettings({
       focusDuration: 25 * 60,
@@ -75,6 +77,7 @@ const Settings = () => {
       adaptiveTimers: true,
       soundEnabled: false,
       distractionAlerts: true,
+      voiceControlEnabled: false,
     });
     
     toast({
@@ -169,9 +172,9 @@ const Settings = () => {
         
         <Card>
           <CardHeader>
-            <CardTitle>AI Features</CardTitle>
+            <CardTitle>AI & Voice Features</CardTitle>
             <CardDescription>
-              Settings for AI and adaptive features
+              Settings for AI, voice control, and adaptive features
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -189,6 +192,23 @@ const Settings = () => {
                 id="adaptiveTimers"
                 checked={adaptiveTimers}
                 onCheckedChange={setAdaptiveTimers}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Mic className="h-4 w-4 text-red-500" />
+                  <Label htmlFor="voiceControlEnabled">Voice Control</Label>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Enable hands-free voice commands for timer control
+                </p>
+              </div>
+              <Switch
+                id="voiceControlEnabled"
+                checked={voiceControlEnabled}
+                onCheckedChange={setVoiceControlEnabled}
               />
             </div>
             

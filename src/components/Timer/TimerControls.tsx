@@ -87,7 +87,7 @@ const TimerControls: React.FC = () => {
       {mode === 'focus' && (
         <div className="w-full">
           <Select
-            value={currentTaskId}
+            value={currentTaskId || "none"}
             onValueChange={setCurrentTaskId}
             disabled={isRunning || isPaused}
           >
@@ -95,7 +95,7 @@ const TimerControls: React.FC = () => {
               <SelectValue placeholder="Select a task (optional)" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">No task selected</SelectItem>
+              <SelectItem value="none">No task selected</SelectItem>
               {availableTasks.map(task => (
                 <SelectItem key={task.id} value={task.id}>
                   {task.title}

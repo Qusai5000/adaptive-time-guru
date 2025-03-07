@@ -137,6 +137,20 @@ const VoiceControl: React.FC = () => {
         title: "Voice command detected",
         description: "Sound disabled",
       });
+    } else if (command.includes('play sound') || command.includes('start sound')) {
+      // We'll handle this command in the SoundControls component
+      window.dispatchEvent(new CustomEvent('play-sound'));
+      toast({
+        title: "Voice command detected",
+        description: "Playing sound",
+      });
+    } else if (command.includes('stop sound') || command.includes('pause sound')) {
+      // We'll handle this command in the SoundControls component
+      window.dispatchEvent(new CustomEvent('pause-sound'));
+      toast({
+        title: "Voice command detected",
+        description: "Pausing sound",
+      });
     }
   }, [startTimer, pauseTimer, resetTimer, skipTimer, setMode, updateSettings]);
   

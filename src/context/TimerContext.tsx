@@ -29,7 +29,9 @@ export interface TimerSettings {
   adaptiveTimers: boolean; 
   soundEnabled: boolean;
   distractionAlerts: boolean;
-  voiceControlEnabled: boolean; // New setting for voice control
+  voiceControlEnabled: boolean; // Setting for voice control
+  preferredSoundId?: string; // Added preferred sound ID
+  soundVolume?: number; // Added sound volume setting
 }
 
 // Break suggestion type
@@ -87,6 +89,8 @@ const defaultSettings: TimerSettings = {
   soundEnabled: false,
   distractionAlerts: true,
   voiceControlEnabled: false, // Disabled by default
+  preferredSoundId: 'rain', // Default sound
+  soundVolume: 50, // Default volume (0-100)
 };
 
 // Break suggestions

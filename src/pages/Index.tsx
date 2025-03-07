@@ -3,6 +3,7 @@ import React from 'react';
 import Layout from '@/components/Layout/Layout';
 import TimerDisplay from '@/components/Timer/TimerDisplay';
 import TimerControls from '@/components/Timer/TimerControls';
+import SoundControls from '@/components/Sound/SoundControls';
 import { useTasks } from '@/context/TaskContext';
 import { useTimer } from '@/context/TimerContext';
 import { CheckCircle2 } from 'lucide-react';
@@ -10,7 +11,7 @@ import { cn } from '@/lib/utils';
 
 const Index = () => {
   const { tasks } = useTasks();
-  const { currentTaskId } = useTimer();
+  const { currentTaskId, settings } = useTimer();
   
   // Get current task if selected
   const currentTask = currentTaskId 
@@ -71,6 +72,9 @@ const Index = () => {
         <div className="w-full">
           <TimerDisplay />
           <TimerControls />
+          
+          {/* Sound Controls (shown only when sound is enabled) */}
+          {settings.soundEnabled && <SoundControls />}
         </div>
       </div>
     </Layout>

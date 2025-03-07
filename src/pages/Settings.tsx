@@ -14,12 +14,50 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
-import { BrainCircuit, Volume2, Bell, Mic } from 'lucide-react';
+import { BrainCircuit, Volume2, Bell, Mic, Headphones } from 'lucide-react';
+import { SoundOption } from '@/components/Sound/SoundControls';
+
+const soundOptions: SoundOption[] = [
+  {
+    id: 'rain',
+    name: 'Rainfall',
+    category: 'nature',
+    src: 'https://sounds-app.pages.dev/rain.mp3',
+    description: 'Gentle rainfall to enhance focus',
+  },
+  {
+    id: 'forest',
+    name: 'Forest Ambience',
+    category: 'nature',
+    src: 'https://sounds-app.pages.dev/forest.mp3',
+    description: 'Peaceful forest sounds with birds and leaves',
+  },
+  {
+    id: 'waves',
+    name: 'Ocean Waves',
+    category: 'nature',
+    src: 'https://sounds-app.pages.dev/waves.mp3',
+    description: 'Calming ocean waves to reduce stress',
+  },
+  {
+    id: 'cafe',
+    name: 'Coffee Shop',
+    category: 'ambient',
+    src: 'https://sounds-app.pages.dev/cafe.mp3',
+    description: 'Ambient coffee shop background noise',
+  },
+  {
+    id: 'white-noise',
+    name: 'White Noise',
+    category: 'white-noise',
+    src: 'https://sounds-app.pages.dev/white-noise.mp3',
+    description: 'Consistent white noise to mask distractions',
+  },
+];
 
 const Settings = () => {
   const { settings, updateSettings } = useTimer();
   
-  // Convert settings to minutes for form
   const [focusMinutes, setFocusMinutes] = React.useState(settings.focusDuration / 60);
   const [shortBreakMinutes, setShortBreakMinutes] = React.useState(settings.shortBreakDuration / 60);
   const [longBreakMinutes, setLongBreakMinutes] = React.useState(settings.longBreakDuration / 60);
@@ -28,10 +66,11 @@ const Settings = () => {
   const [autoStartPomodoros, setAutoStartPomodoros] = React.useState(settings.autoStartPomodoros);
   const [adaptiveTimers, setAdaptiveTimers] = React.useState(settings.adaptiveTimers);
   const [soundEnabled, setSoundEnabled] = React.useState(settings.soundEnabled);
+  const [preferredSoundId, setPreferredSoundId] = React.useState(settings.preferredSoundId || 'rain');
+  const [soundVolume, setSoundVolume] = React.useState(settings.soundVolume || 50);
   const [distractionAlerts, setDistractionAlerts] = React.useState(settings.distractionAlerts);
   const [voiceControlEnabled, setVoiceControlEnabled] = React.useState(settings.voiceControlEnabled);
   
-  // Handle save
   const handleSave = () => {
     const newSettings: TimerSettings = {
       focusDuration: focusMinutes * 60,
@@ -44,6 +83,8 @@ const Settings = () => {
       soundEnabled,
       distractionAlerts,
       voiceControlEnabled,
+      preferredSoundId,
+      soundVolume,
     };
     
     updateSettings(newSettings);
@@ -54,7 +95,6 @@ const Settings = () => {
     });
   };
   
-  // Reset to defaults
   const handleReset = () => {
     setFocusMinutes(25);
     setShortBreakMinutes(5);
@@ -66,6 +106,8 @@ const Settings = () => {
     setSoundEnabled(false);
     setDistractionAlerts(true);
     setVoiceControlEnabled(false);
+    setPreferredSoundId('rain');
+    setSoundVolume(50);
     
     updateSettings({
       focusDuration: 25 * 60,
@@ -78,6 +120,8 @@ const Settings = () => {
       soundEnabled: false,
       distractionAlerts: true,
       voiceControlEnabled: false,
+      preferredSoundId: 'rain',
+      soundVolume: 50,
     });
     
     toast({
@@ -232,7 +276,7 @@ const Settings = () => {
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <div className="flex items-center gap-2">
-                  <Volume2 className="h-4 w-4 text-blue-500" />
+                  <Headphones className="h-4 w-4 text-blue-500" />
                   <Label htmlFor="soundEnabled">Background Sounds</Label>
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -285,6 +329,53 @@ const Settings = () => {
             </div>
           </CardContent>
         </Card>
+        
+        {soundEnabled && (
+          <Card className="mt-4">
+            <CardHeader>
+              <CardTitle>Sound Settings</CardTitle>
+              <CardDescription>
+                Customize background sounds for focus sessions
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="preferredSound">Default Sound</Label>
+                <select 
+                  id="preferredSound"
+                  className="w-full p-2 border border-input rounded-md" 
+                  value={preferredSoundId}
+                  onChange={(e) => setPreferredSoundId(e.target.value)}
+                >
+                  {soundOptions.map(sound => (
+                    <option key={sound.id} value={sound.id}>
+                      {sound.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-muted-foreground">
+                  {soundOptions.find(s => s.id === preferredSoundId)?.description}
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="soundVolume">Default Volume</Label>
+                <div className="flex items-center gap-4">
+                  <Slider
+                    id="soundVolume"
+                    min={0}
+                    max={100}
+                    step={1}
+                    value={[soundVolume]}
+                    onValueChange={(value) => setSoundVolume(value[0])}
+                    className="flex-1"
+                  />
+                  <span className="w-12 text-center">{soundVolume}%</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
         
         <div className="flex justify-between mt-6">
           <Button variant="outline" onClick={handleReset}>

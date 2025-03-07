@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTimer, TimerMode } from '@/context/TimerContext';
 import { cn } from '@/lib/utils';
+import { BrainCircuit, LineChart } from 'lucide-react';
 
 const TimerDisplay: React.FC = () => {
   const { 
@@ -9,7 +10,9 @@ const TimerDisplay: React.FC = () => {
     progress, 
     mode, 
     status,
-    sessionsCompleted
+    sessionsCompleted,
+    focusScore,
+    settings
   } = useTimer();
   
   // Animation smoothing
@@ -67,10 +70,17 @@ const TimerDisplay: React.FC = () => {
 
   const animationClass = status === 'running' ? 'animate-breathe' : '';
 
+  // Get focus score color
+  const getFocusScoreColor = (score: number): string => {
+    if (score >= 80) return 'text-green-500';
+    if (score >= 50) return 'text-yellow-500';
+    return 'text-red-500';
+  };
+
   return (
     <div className="flex flex-col items-center justify-center py-8">
       <div className={cn(
-        "transition-all duration-500 mb-4 text-center",
+        "transition-all duration-500 mb-2 text-center",
         getModeColor(mode).replace('stroke-', 'text-')
       )}>
         <h2 className="text-2xl font-medium">{getModeTitle(mode)}</h2>
@@ -78,6 +88,14 @@ const TimerDisplay: React.FC = () => {
           Session: {sessionsCompleted + 1}
         </div>
       </div>
+      
+      {/* AI Indicator for adaptive timers */}
+      {settings.adaptiveTimers && (
+        <div className="flex items-center gap-1 mb-2 text-purple-500 bg-purple-50 px-2 py-1 rounded-full text-xs">
+          <BrainCircuit className="h-3 w-3" />
+          <span>AI Adaptation Active</span>
+        </div>
+      )}
       
       <div className="relative my-4">
         <svg 
@@ -136,6 +154,20 @@ const TimerDisplay: React.FC = () => {
           </div>
         )}
       </div>
+      
+      {/* Focus Score (only show during focus mode) */}
+      {mode === 'focus' && (
+        <div className="mt-2 flex items-center gap-2">
+          <LineChart className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Focus Score:</span>
+          <span className={cn(
+            "font-semibold",
+            getFocusScoreColor(focusScore)
+          )}>
+            {focusScore}
+          </span>
+        </div>
+      )}
     </div>
   );
 };

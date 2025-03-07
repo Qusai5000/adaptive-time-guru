@@ -3,7 +3,7 @@ import React from 'react';
 import { useTimer } from '@/context/TimerContext';
 import { useTasks } from '@/context/TaskContext';
 import { cn } from '@/lib/utils';
-import { Play, Pause, RotateCcw, SkipForward } from 'lucide-react';
+import { Play, Pause, RotateCcw, SkipForward, BrainCircuit, Volume2, VolumeX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
   Select,
@@ -12,6 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { toast } from '@/components/ui/use-toast';
 
 const TimerControls: React.FC = () => {
   const { 
@@ -23,7 +25,12 @@ const TimerControls: React.FC = () => {
     mode,
     setMode,
     currentTaskId,
-    setCurrentTaskId
+    setCurrentTaskId,
+    settings,
+    updateSettings,
+    distractionCount,
+    focusScore,
+    breakSuggestion
   } = useTimer();
 
   const { tasks, incrementTaskPomodoro } = useTasks();
@@ -37,6 +44,28 @@ const TimerControls: React.FC = () => {
     if (mode === 'focus' && currentTaskId) {
       incrementTaskPomodoro(currentTaskId);
     }
+  };
+  
+  // Toggle adaptive timer setting
+  const toggleAdaptiveTimer = () => {
+    updateSettings({ adaptiveTimers: !settings.adaptiveTimers });
+    toast({
+      title: settings.adaptiveTimers ? "AI adaptation disabled" : "AI adaptation enabled",
+      description: settings.adaptiveTimers 
+        ? "Timer durations will no longer adapt to your focus patterns" 
+        : "Timer durations will now adapt based on your focus patterns",
+    });
+  };
+  
+  // Toggle sound setting
+  const toggleSound = () => {
+    updateSettings({ soundEnabled: !settings.soundEnabled });
+    toast({
+      title: settings.soundEnabled ? "Sound disabled" : "Sound enabled",
+      description: settings.soundEnabled 
+        ? "Background sounds are now turned off" 
+        : "Background sounds will play during focus sessions",
+    });
   };
   
   const isRunning = status === 'running';
@@ -83,6 +112,14 @@ const TimerControls: React.FC = () => {
         </Button>
       </div>
       
+      {/* Break suggestion (only show on breaks) */}
+      {(mode === 'shortBreak' || mode === 'longBreak') && breakSuggestion && (
+        <div className="w-full px-4 py-3 bg-blue-50 rounded-lg border border-blue-200 text-center">
+          <h4 className="font-medium text-blue-700">{breakSuggestion.title}</h4>
+          <p className="text-sm text-blue-600 mt-1">{breakSuggestion.description}</p>
+        </div>
+      )}
+      
       {/* Task selector (only show for focus mode) */}
       {mode === 'focus' && (
         <div className="w-full">
@@ -103,6 +140,27 @@ const TimerControls: React.FC = () => {
               ))}
             </SelectContent>
           </Select>
+        </div>
+      )}
+      
+      {/* Session stats (only during focus) */}
+      {mode === 'focus' && (isRunning || isPaused) && (
+        <div className="flex justify-between px-1">
+          <Badge variant="outline" className={cn(
+            "text-xs",
+            distractionCount > 0 ? "bg-red-50 text-red-700 border-red-200" : "bg-green-50 text-green-700 border-green-200"
+          )}>
+            {distractionCount} distraction{distractionCount !== 1 ? 's' : ''}
+          </Badge>
+          
+          <Badge variant="outline" className={cn(
+            "text-xs",
+            focusScore >= 80 ? "bg-green-50 text-green-700 border-green-200" : 
+            focusScore >= 50 ? "bg-yellow-50 text-yellow-700 border-yellow-200" : 
+            "bg-red-50 text-red-700 border-red-200"
+          )}>
+            Focus score: {focusScore}
+          </Badge>
         </div>
       )}
       
@@ -151,6 +209,49 @@ const TimerControls: React.FC = () => {
           disabled={isCompleted}
         >
           <SkipForward className="h-5 w-5" />
+        </Button>
+      </div>
+      
+      {/* AI and Sound controls */}
+      <div className="flex justify-center gap-4">
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            "gap-2",
+            settings.adaptiveTimers ? "bg-purple-50 border-purple-200" : ""
+          )}
+          onClick={toggleAdaptiveTimer}
+        >
+          <BrainCircuit className={cn(
+            "h-4 w-4", 
+            settings.adaptiveTimers ? "text-purple-600" : "text-gray-500"
+          )} />
+          <span className={settings.adaptiveTimers ? "text-purple-600" : ""}>
+            {settings.adaptiveTimers ? "AI Enabled" : "AI Disabled"}
+          </span>
+        </Button>
+        
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            "gap-2",
+            settings.soundEnabled ? "bg-indigo-50 border-indigo-200" : ""
+          )}
+          onClick={toggleSound}
+        >
+          {settings.soundEnabled ? (
+            <>
+              <Volume2 className="h-4 w-4 text-indigo-600" />
+              <span className="text-indigo-600">Sound On</span>
+            </>
+          ) : (
+            <>
+              <VolumeX className="h-4 w-4 text-gray-500" />
+              <span>Sound Off</span>
+            </>
+          )}
         </Button>
       </div>
     </div>

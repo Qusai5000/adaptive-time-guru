@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { toast } from '@/components/ui/use-toast';
+import { BrainCircuit, Volume2, Bell } from 'lucide-react';
 
 const Settings = () => {
   const { settings, updateSettings } = useTimer();
@@ -26,6 +27,9 @@ const Settings = () => {
   const [longBreakInterval, setLongBreakInterval] = React.useState(settings.longBreakInterval);
   const [autoStartBreaks, setAutoStartBreaks] = React.useState(settings.autoStartBreaks);
   const [autoStartPomodoros, setAutoStartPomodoros] = React.useState(settings.autoStartPomodoros);
+  const [adaptiveTimers, setAdaptiveTimers] = React.useState(settings.adaptiveTimers);
+  const [soundEnabled, setSoundEnabled] = React.useState(settings.soundEnabled);
+  const [distractionAlerts, setDistractionAlerts] = React.useState(settings.distractionAlerts);
   
   // Handle save
   const handleSave = () => {
@@ -36,6 +40,9 @@ const Settings = () => {
       longBreakInterval,
       autoStartBreaks,
       autoStartPomodoros,
+      adaptiveTimers,
+      soundEnabled,
+      distractionAlerts,
     };
     
     updateSettings(newSettings);
@@ -54,6 +61,9 @@ const Settings = () => {
     setLongBreakInterval(4);
     setAutoStartBreaks(false);
     setAutoStartPomodoros(false);
+    setAdaptiveTimers(true);
+    setSoundEnabled(false);
+    setDistractionAlerts(true);
     
     updateSettings({
       focusDuration: 25 * 60,
@@ -62,6 +72,9 @@ const Settings = () => {
       longBreakInterval: 4,
       autoStartBreaks: false,
       autoStartPomodoros: false,
+      adaptiveTimers: true,
+      soundEnabled: false,
+      distractionAlerts: true,
     });
     
     toast({
@@ -150,6 +163,67 @@ const Settings = () => {
                 />
                 <span className="w-12 text-center">{longBreakInterval}</span>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>AI Features</CardTitle>
+            <CardDescription>
+              Settings for AI and adaptive features
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <BrainCircuit className="h-4 w-4 text-purple-600" />
+                  <Label htmlFor="adaptiveTimers">Adaptive Timers</Label>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Allow AI to adjust session durations based on your focus patterns
+                </p>
+              </div>
+              <Switch
+                id="adaptiveTimers"
+                checked={adaptiveTimers}
+                onCheckedChange={setAdaptiveTimers}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Bell className="h-4 w-4 text-red-500" />
+                  <Label htmlFor="distractionAlerts">Distraction Alerts</Label>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Show notifications when distractions are detected
+                </p>
+              </div>
+              <Switch
+                id="distractionAlerts"
+                checked={distractionAlerts}
+                onCheckedChange={setDistractionAlerts}
+              />
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <Volume2 className="h-4 w-4 text-blue-500" />
+                  <Label htmlFor="soundEnabled">Background Sounds</Label>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Play focus-enhancing background sounds during sessions
+                </p>
+              </div>
+              <Switch
+                id="soundEnabled"
+                checked={soundEnabled}
+                onCheckedChange={setSoundEnabled}
+              />
             </div>
           </CardContent>
         </Card>

@@ -27,10 +27,11 @@ const VoiceControl: React.FC = () => {
   // Initialize speech recognition
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      // Use the appropriate Speech Recognition constructor with TypeScript support
+      const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
       
-      if (SpeechRecognition) {
-        const recognitionInstance = new SpeechRecognition();
+      if (SpeechRecognitionAPI) {
+        const recognitionInstance = new SpeechRecognitionAPI();
         recognitionInstance.continuous = true;
         recognitionInstance.interimResults = true;
         recognitionInstance.lang = 'en-US';
